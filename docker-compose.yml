@@ -1,3 +1,4 @@
+# docker-compose.yml
 services:
   pdf2text:
     build: .
@@ -5,9 +6,14 @@ services:
     container_name: pdf2text
     environment:
       - SHARED_KEY_B64=${SHARED_KEY_B64}
-      - MAX_MB=20
-      - FETCH_TIMEOUT=45
       - ALLOWED_HOSTS_REGEX=^https://.*\.hubspotusercontent-.*\.net/.*$
+    volumes:
+      - ./certs:/certs:ro    # contient server.crt et server.key
     ports:
-      - "127.0.0.1:8080:8080" 
+      - "8443:8443"
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0 --port 8443
+      --ssl-keyfile /certs/server.key
+      --ssl-certfile /certs/server.crt
     restart: unless-stopped
