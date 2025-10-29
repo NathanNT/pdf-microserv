@@ -1,0 +1,13 @@
+services:
+  pdf2text:
+    build: .
+    image: pdf2text:latest
+    container_name: pdf2text
+    environment:
+      - SHARED_KEY_B64=${SHARED_KEY_B64}
+      - MAX_MB=20
+      - FETCH_TIMEOUT=45
+      - ALLOWED_HOSTS_REGEX=^https://.*\.hubspotusercontent-.*\.net/.*$
+    ports:
+      - "127.0.0.1:8080:8080" 
+    restart: unless-stopped
